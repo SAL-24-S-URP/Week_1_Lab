@@ -36,9 +36,9 @@ module FIFO_TOP_TB ();
     //----------------------------------------------------------
 
     reg                                 wren;
-    reg        [15:0]                   wdata;
+    reg        [31:0]                   wdata;
     reg                                 rden;
-    wire       [15:0]                   rdata;    
+    wire       [31:0]                   rdata;    
     wire                                full;
     wire                                empty;         
     
@@ -65,20 +65,38 @@ module FIFO_TOP_TB ();
     initial begin
         int count;
         count = 0;
+        #1 wren = 1'b0; rden = 1'b0; wdata = 32'b0;
         repeat (5) @(posedge clk);
-        #1 wren = 1'b0; rden = 1'b0; wdata = 16'b0;
-        while(count < 15) begin
-            @(posedge clk);
-            wdata   = count;
+
+        while(count < 16) begin
             wren    = 1'b1;
-            count++;
+            wdata   = count;
+            @(posedge clk);
+                #1 
+                    count++;
         end
-        
+
+        @(posedge clk);
+        wren = 1'b0;
+
         while(count > 0) begin
             @(posedge clk);
             rden    = 1'b1;
             count--;
         end
+
+        @(posedge clk);
+        rden = 1'b0;
+
+        while(count < 17) begin
+            @(posedge clk);
+            wdata   = count;
+            wren    = 1'b1;
+            @(posedge clk);
+                #1 
+                    count++;
+        end
+
         $display("Simulation Done!");
         $finish;
     end
