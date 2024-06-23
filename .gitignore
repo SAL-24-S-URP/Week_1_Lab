@@ -1,0 +1,4 @@
+*.txt
+*.vcd
+/FSM/SIM/OUTPUT
+/FIFO/SIM/OUTPUT
